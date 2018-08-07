@@ -82,8 +82,8 @@ $ sudo buildah build-using-dockerfile -t nkhare/rsvpapp:buildah github.com/cloud
 - List the images.
 ```
 $ sudo buildah images
+
 IMAGE ID             IMAGE NAME                                               CREATED AT             SIZE
-b0c552b8cf64         docker.io/teamcloudyuga/python:alpine                    Sep 30, 2016 10:09     95.3 MB
 edaae541faea         localhost/nkhare/rsvpapp:buildah                         Aug 7, 2018 16:04      114 MB
 
 ```
