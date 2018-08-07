@@ -56,11 +56,10 @@ Successfully tagged nginx:latest
 ```
 $ docker image ls
 
-REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
-nkhare/nginx     latest              f545da818f47        4 days ago          171MB
-ubuntu                  16.04               7aa3602ab41e        11 days ago         115MB
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+nkhare/nginx        latest              4073540cbcec        3 seconds ago       171MB
+ubuntu              16.04               7aa3602ab41e        11 days ago     
 ```
-
 ## Multi-Stage
 Multi stage build is the new feature introduced in the Docker 17.05, Which is very useful for optimizing the Dockerfile. It is very challeging task to write down the efficient Dockerfile with the lesser Docker image size. Each instruction in the Dockerfile creates the layer to the Docker image. Generally before this feature one Dockerfile was used for development (which contained everything needed to build your application),and another [reduced/modified] Dockerfile was used for production, which only contained your application and dependencies which were needed to run that application. 
 
@@ -98,8 +97,10 @@ $ docker image build -t nkhare/simpleapp:capp -f ./SimpleDockerfile .
 - List the images.
 ```
 $ docker image ls
-REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-nkhare/simpleapp   capp                e36f2e302250        4 days ago          329MB
+
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+nkhare/simpleapp    capp                f815146b7e5a        About a minute ago   329MB
+
 ```
 
 - Run the Docker container from the above created image.
@@ -151,16 +152,16 @@ CMD ["bash", "/usr/src/app/start.sh"]
 
 - Build the image from above Dockerfile.
 ```
-$ ddocker image build -t nkhare/multistage:capp .
+$ docker image build -t nkhare/multistage:capp .
 ```
 
 - List Docker image.
 ```
-$  docker image l
-s
-REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
-nkhare/multistage   capp                44aec4c9e792        4 days ago          83.5MB
-nkhare/simpleapp    capp                e36f2e302250        4 days ago          329MB
+$  docker image ls
+
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+nkhare/multistage   capp                fa3958197408        11 seconds ago      83.5MB
+nkhare/simpleapp    capp                f815146b7e5a        2 minutes ago       329MB
 
 ```
 Here we can see that the size of image created using the multi-stage build is smaller than earlier image.
