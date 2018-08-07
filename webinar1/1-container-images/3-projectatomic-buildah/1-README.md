@@ -82,9 +82,10 @@ $ sudo buildah build-using-dockerfile -t nkhare/rsvpapp:buildah github.com/cloud
 - List the images.
 ```
 $ sudo buildah images
+
 IMAGE ID             IMAGE NAME                                               CREATED AT             SIZE
-b0c552b8cf64         docker.io/nkhare/python:alpine                    Sep 30, 2016 04:39     95.3 MB
-8a6ee9908a2f         localhost/nkhare/rsvpapp:buildah                  Aug 2, 2018 07:53      114 MB
+edaae541faea         localhost/nkhare/rsvpapp:buildah                         Aug 7, 2018 16:04      114 MB
+
 ```
 - [If you have installed docker and logged in to docker using CLI then you can skip this step].
 
@@ -108,8 +109,9 @@ $ sudo buildah push  nkhare/rsvpapp:buildah docker-daemon:nkhare/rsvpapp:buildah
 - List the Docker images.
 ```
 $ docker image ls
-REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
-nkhare/rsvpapp   buildah             ade4238b7a80        13 minutes ago      108MB
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+nkhare/rsvpapp      buildah             edaae541faea        41 seconds ago      108MB
+
 ```
 ### Reference
 - https://github.com/projectatomic/buildah
