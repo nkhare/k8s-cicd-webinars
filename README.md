@@ -1,4 +1,4 @@
-# k8s-cicd-webinar
+# k8s-cicd-webinar Series
 - Webinar 1 - Building Blocks 
 	- Overview of Cloud Native
 	- Container images
