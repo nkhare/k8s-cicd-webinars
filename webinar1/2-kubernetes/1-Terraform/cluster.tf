@@ -1,5 +1,5 @@
 resource "digitalocean_droplet" "master" {
-    name = "k8s-matser-node"
+    name = "k8s-master-node"
     image = "36148574"
     size = "${var.size}"
     region = "${var.region}"
