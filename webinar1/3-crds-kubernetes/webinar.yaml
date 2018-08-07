@@ -1,0 +1,7 @@
+apiVersion: "digitalocean.com/v1"
+kind: Webinar
+metadata:
+  name: webinar1
+spec:
+  name: webinar
+  image: nginx

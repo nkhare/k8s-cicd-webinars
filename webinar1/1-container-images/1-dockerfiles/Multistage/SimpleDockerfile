@@ -1,0 +1,8 @@
+FROM ubuntu AS buildstep
+RUN apt-get update && apt-get install -y build-essential gcc
+COPY hello.c /app/hello.c
+COPY ./start.sh /app/start.sh
+WORKDIR /app
+RUN gcc -o hello hello.c && chmod +x hello
+ENV INITSYSTEM=on
+CMD ["bash", "/app/start.sh"]

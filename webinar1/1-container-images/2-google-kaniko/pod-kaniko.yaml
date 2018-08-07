@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:latest
+    args: ["--dockerfile=./Dockerfile",
+            "--context=/tmp/rsvpapp/",
+            "--destination=docker.io/nkhare/rsvpapp:kaniko",
+            "--force" ]
+    volumeMounts:
+      - name: docker-config
+        mountPath: /root/.docker/
+      - name: demo
+        mountPath: /tmp/rsvpapp
+  restartPolicy: Never
+  initContainers:
+    - image: python
+      name: demo
+      command: ["/bin/sh"]
+      args: ["-c", "git clone https://github.com/cloudyuga/rsvpapp.git /tmp/rsvpapp"] 
+      volumeMounts:
+      - name: demo
+        mountPath: /tmp/rsvpapp
+  restartPolicy: Never
+  volumes:
+    - name: docker-config
+      configMap:
+        name: docker-config
+    - name: demo
+      emptyDir: {}
