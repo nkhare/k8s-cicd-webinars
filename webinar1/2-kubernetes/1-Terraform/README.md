@@ -48,7 +48,7 @@ cluster.tf  destroy.sh  outputs.tf  provider.tf  script.sh
 ```
 $ kubectl get nodes
 NAME                STATUS    ROLES     AGE       VERSION
-k8s-master-node     Ready     master    2m        v1.10.0
+k8s-matser-node     Ready     master    2m        v1.10.0
 k8s-worker-node-1   Ready     <none>    1m        v1.10.0
 k8s-worker-node-2   Ready     <none>    57s       v1.10.0
 ```

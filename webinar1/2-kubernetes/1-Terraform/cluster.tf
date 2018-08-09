@@ -1,6 +1,6 @@
 resource "digitalocean_droplet" "master" {
-    name = "k8s-master-node"
-    image = "36148574"
+    name = "k8s-matser-node"
+    image = "ubuntu-16-04-x64"
     size = "${var.size}"
     region = "${var.region}"
     ipv6 = true
@@ -18,6 +18,11 @@ resource "digitalocean_droplet" "master" {
     provisioner "local-exec" {
     command = "echo Master Node IP-ADDRESS == ${digitalocean_droplet.master.ipv4_address} >> info.txt"
   }
+
+    provisioner "remote-exec" {
+      script = "files/k8s_bootstrap.sh" 
+      }
+
     provisioner "remote-exec" {
     inline = [
       "export PATH=$PATH:/usr/bin",
@@ -46,7 +51,7 @@ resource "digitalocean_droplet" "master" {
 
 resource "digitalocean_droplet" "worker1" {
     name = "k8s-worker-node-1"
-    image = "36148574"
+    image = "ubuntu-16-04-x64"
     size = "${var.size}"
     region = "${var.region}"
     ipv6 = true
@@ -64,6 +69,11 @@ resource "digitalocean_droplet" "worker1" {
     provisioner "local-exec" {
     command = "echo Worker1 Node IP-ADDRESS == ${digitalocean_droplet.worker1.ipv4_address} >> info.txt"
   }
+
+    provisioner "remote-exec" {
+      script = "files/k8s_bootstrap.sh" 
+      }
+
     provisioner "remote-exec" {
     inline = [
       "export PATH=$PATH:/usr/bin",
@@ -75,7 +85,7 @@ resource "digitalocean_droplet" "worker1" {
 
 resource "digitalocean_droplet" "worker2" {
     name = "k8s-worker-node-2"
-    image = "36148574"
+    image = "ubuntu-16-04-x64"
     size = "${var.size}"
     region = "${var.region}"
     ipv6 = true
@@ -93,6 +103,11 @@ resource "digitalocean_droplet" "worker2" {
     provisioner "local-exec" {
     command = "echo Worker2 Node IP-ADDRESS == ${digitalocean_droplet.worker2.ipv4_address} >> info.txt"
   }
+
+    provisioner "remote-exec" {
+      script = "files/k8s_bootstrap.sh" 
+      }
+
     provisioner "remote-exec" {
     inline = [
       "export PATH=$PATH:/usr/bin",
