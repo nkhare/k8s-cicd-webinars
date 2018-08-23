@@ -119,23 +119,6 @@ It will ask for you some inputs. Provide proper Inputs.
 
 - It will create github repository for your application.
 
-- You can list the Environments.
-```
-$ jx get env
-NAME       LABEL       KIND        PROMOTE NAMESPACE     ORDER CLUSTER SOURCE                                                           REF PR
-dev        Development Development Never   jx            0                                                                                  
-staging    Staging     Permanent   Auto    jx-staging    100           https://github.com/vghule/environment-crestnickel-staging.git        
-production Production  Permanent   Manual  jx-production 200           https://github.com/vghule/environment-crestnickel-production.git     
-```
-
-- You can list the applications.
-```
-$ jx get applications
-APPLICATION STAGING PODS URL                                                  PRODUCTION PODS URL
-python-http 0.0.1   1/1  http://python-http.jx-staging.206.189.227.210.nip.io      
-```
-
-- You can access the simple Python application running at the `http://python-http.jx-staging.206.189.227.210.nip.io`.
 
 - Modify `charts/rsvpapp/values.yaml` files.
 ```
