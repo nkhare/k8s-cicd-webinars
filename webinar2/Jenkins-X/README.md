@@ -100,11 +100,20 @@ nexus                     http://nexus.jx.206.189.227.210.nip.io
 
 ### Create a Application.
 
-- Create the application using following command.
+- Clone the application repository.
 ```
-$ jx create quickstart
+$  git clone https://github.com/cloudyuga/rsvpapp.git
+
+$ cd rsvpapp
+
+$ rm -r .git/
+
 ```
-Then choose `python-http` as the quickstart.
+
+- Create the application in `jx` and on `github` using following command.
+```
+$ jx import
+```
 
 It will ask for you some inputs. Provide proper Inputs.
 
@@ -128,4 +137,86 @@ python-http 0.0.1   1/1  http://python-http.jx-staging.206.189.227.210.nip.io
 
 - You can access the simple Python application running at the `http://python-http.jx-staging.206.189.227.210.nip.io`.
 
+- Modify `charts/rsvpapp/values.yaml` files.
+```
+cat <<EOF> charts/rsvpapp/values.yaml 
 
+# Default values for python.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+env: mongodb
+image:
+  repository: draft
+  tag: dev
+  pullPolicy: IfNotPresent
+service:
+  name: rsvpapp
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 5000
+  annotations:
+    fabric8.io/expose: "true"
+    fabric8.io/ingress.annotations: "kubernetes.io/ingress.class: nginx"
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+ingress:
+  enabled: false
+EOF
+```
+- Create `charts/rsvpapp/requirements.yaml`
+```
+$ cat <<EOF> charts/rsvpapp/requirements.yaml
+
+dependencies:
+- name: mongodb
+  repository: http://104.236.236.126:8879
+  version: 4.1.1
+
+EOF
+
+```
+
+- Update Helm chart deployment template at `charts/rsvpapp/templates/deployment.yaml`
+
+```
+$ cat <<EOF> charts/rsvpapp/templates/deployment.yaml
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    draft: {{ default "draft-app" .Values.draft }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        draft: {{ default "draft-app" .Values.draft }}
+        app: {{ template "fullname" . }}
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+        - name: MONGODB_HOST
+          value: {{.Release.Name}}-{{ .Values.env }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+
+EOF
+````
