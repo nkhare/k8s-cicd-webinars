@@ -169,14 +169,15 @@ ingress:
   enabled: false
 EOF
 ```
+
 - Create `charts/rsvpapp/requirements.yaml`
 ```
 $ cat <<EOF> charts/rsvpapp/requirements.yaml
 
 dependencies:
-- name: mongodb
-  repository: http://104.236.236.126:8879
-  version: 4.1.1
+- name: mongodb-replicaset
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 3.5.5
 
 EOF
 
@@ -211,12 +212,13 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         env:
         - name: MONGODB_HOST
-          value: {{.Release.Name}}-{{ .Values.env }}
+          value: "mongodb://{{.Release.Name}}-{{ .Values.env }}-replicaset-0.{{.Release.Name}}-{{ .Values.env }}-replicaset,{{.Release.Name}}-{{ .Values.env }}-replicaset-1.{{.Release.Name}}-{{ .Values.env }}-replicaset,{{.Release.Name}}-{{ .Values.env }}-replicaset-2.{{.Release.Name}}-{{ .Values.env }}-replicaset:27017"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+
 
 EOF
 ````
