@@ -205,11 +205,19 @@ spec:
 
 EOF
 ````
+.
+
+- Push these changes to the GitHub
+```
+$ git add *
+$ git commit -m update
+$ git push
+```
 
 
-- It will trigger new build of you application. Open the Jenkins UI and you will there see the cosole output of your application build.
+- When we push our changes to GitHub. It will trigger new build of you application. Open the Jenkins UI and you will there see the console output of your application build.
 
-- You will list application using the command.
+- Once your application is build and deployed.  will list application using the command.
 ```
 $ jx get app
 
@@ -228,10 +236,12 @@ $ jx get activity -f rsvpapp
 
 - List the pod running in `jx-staging` namespace.
 ```
-$  kubectl get po -n jx-staging
-NAME                                  READY     STATUS    RESTARTS   AGE
-jx-staging-mongodb-54b486767f-lngb6   1/1       Running   0          9m
-jx-staging-rsvpapp-866d86bc9f-bk2fd   1/1       Running   0          9m
+$ kubectl get po -n jx-staging
+NAME                                 READY     STATUS    RESTARTS   AGE
+jx-staging-mongodb-replicaset-0      1/1       Running   0          6m
+jx-staging-mongodb-replicaset-1      1/1       Running   0          6m
+jx-staging-mongodb-replicaset-2      1/1       Running   0          5m
+jx-staging-rsvpapp-c864c4844-4fw5z   1/1       Running   0          6m
 ```
 ## Promote application to the Production.
 ```
@@ -245,3 +255,12 @@ mongodb     4.1.1   1/1                                                  4.1.1  
 rsvpapp     0.0.3   1/1  http://rsvpapp.jx-staging.167.99.234.182.nip.io 0.0.3      1/1  http://rsvpapp.jx-production.167.99.234.182.nip.io
 ```
 We can confirm that our application is promoted to the production by accessing the application URL provided in above output.
+
+- List the pods in `jx-production`.
+```
+$ kubectl get pod -n jx-production
+NAME                                     READY     STATUS    RESTARTS   AGE
+jx-production-mongodb-replicaset-0       1/1       Running   0          1m
+jx-production-mongodb-replicaset-1       1/1       Running   0          1m
+jx-production-mongodb-replicaset-2       1/1       Running   0          55s
+jx-production-rsvpapp-54748d68bd-zjgv7   1/1       Running   0          1m ```
