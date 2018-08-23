@@ -220,3 +220,49 @@ spec:
 
 EOF
 ````
+
+- Now push the changes to Git repository.
+```
+$ git add *
+$ git commit -m update
+$ git push
+```
+
+- It will trigger new build of you application. Open the Jenkins UI and you will there see the cosole output of your application build.
+
+- You will list application using the command.
+```
+$ jx get app
+
+APPLICATION STAGING PODS URL                                             PRODUCTION PODS URL
+mongodb     4.1.1   1/1                                                                  
+rsvpapp     0.0.3   1/1  http://rsvpapp.jx-staging.167.99.234.182.nip.io                 
+```
+At this given URL you can access the application.
+
+Now our application is running at above given URL.
+
+- You can get activity of the application by using.
+```
+$ jx get activity -f rsvpapp 
+````
+
+- List the pod running in `jx-staging` namespace.
+```
+$  kubectl get po -n jx-staging
+NAME                                  READY     STATUS    RESTARTS   AGE
+jx-staging-mongodb-54b486767f-lngb6   1/1       Running   0          9m
+jx-staging-rsvpapp-866d86bc9f-bk2fd   1/1       Running   0          9m
+```
+## Promote application to the Production.
+```
+$ jx promote rsvpapp --version=0.0.3 --env=production
+```
+- After successful promotion you can check the list of application.
+```
+$ jx get app
+APPLICATION STAGING PODS URL                                             PRODUCTION PODS URL
+mongodb     4.1.1   1/1                                                  4.1.1      1/1  
+rsvpapp     0.0.3   1/1  http://rsvpapp.jx-staging.167.99.234.182.nip.io 0.0.3      1/1  http://rsvpapp.jx-production.167.99.234.182.nip.io
+```
+We can confirm that our application is promoted to the production by accessing the application URL provided in above output.
