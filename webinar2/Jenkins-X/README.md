@@ -222,7 +222,6 @@ $ git push
 $ jx get app
 
 APPLICATION STAGING PODS URL                                             PRODUCTION PODS URL
-mongodb     4.1.1   1/1                                                                  
 rsvpapp     0.0.3   1/1  http://rsvpapp.jx-staging.167.99.234.182.nip.io                 
 ```
 At this given URL you can access the application.
@@ -251,7 +250,6 @@ $ jx promote rsvpapp --version=0.0.3 --env=production
 ```
 $ jx get app
 APPLICATION STAGING PODS URL                                             PRODUCTION PODS URL
-mongodb     4.1.1   1/1                                                  4.1.1      1/1  
 rsvpapp     0.0.3   1/1  http://rsvpapp.jx-staging.167.99.234.182.nip.io 0.0.3      1/1  http://rsvpapp.jx-production.167.99.234.182.nip.io
 ```
 We can confirm that our application is promoted to the production by accessing the application URL provided in above output.
