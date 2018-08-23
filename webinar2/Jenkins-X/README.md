@@ -225,8 +225,7 @@ EOF
 
 - Lets add pytest in `Jenkinsfile`.
 ```
-$ cat <<EOF> Jenkinsfile
-
+$ cat <<EOF> ./Jenkinsfile
 pipeline {
     agent {
         label "jenkins-python"
