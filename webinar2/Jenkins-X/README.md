@@ -35,7 +35,7 @@ $ apt install socat
 ```
 - Configure Docker to use Insecure registries.
 ```
-cat <<EOF>> /etc/docker/daemon.json
+cat <<EOF> /etc/docker/daemon.json
 {
   "insecure-registries" : ["0.0.0.0/0"]
 }
