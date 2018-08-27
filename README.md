@@ -9,7 +9,7 @@
 	- Jenkins-X
 - Webinar 3 - CI/CD pipelines and Service Mesh
 	- Service Mesh
-        - Spinnaker
+	- Spinnaker
 - Webinar 4  - CI/CD toolset
 	- GitOps
 	- Agro
