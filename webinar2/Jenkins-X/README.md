@@ -152,6 +152,14 @@ ingress:
 EOF
 ```
 
+- Edit `charts/preview/requirements.yaml`.
+```
+- name: mongodb-replicaset
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 3.5.5
+```
+
+
 - Create `charts/rsvpapp/requirements.yaml`
 ```
 $ cat <<EOF> charts/rsvpapp/requirements.yaml
