@@ -128,7 +128,6 @@ $ cat <<EOF> charts/rsvpapp/values.yaml
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
-env: mongodb
 image:
   repository: draft
   tag: dev
@@ -195,7 +194,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         env:
         - name: MONGODB_HOST
-          value: "mongodb://{{.Release.Name}}-{{ .Values.env }}-replicaset-0.{{.Release.Name}}-{{ .Values.env }}-replicaset,{{.Release.Name}}-{{ .Values.env }}-replicaset-1.{{.Release.Name}}-{{ .Values.env }}-replicaset,{{.Release.Name}}-{{ .Values.env }}-replicaset-2.{{.Release.Name}}-{{ .Values.env }}-replicaset:27017"
+          value: "{{.Release.Name}}-mongodb-replicaset"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
