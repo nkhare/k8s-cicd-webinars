@@ -98,7 +98,7 @@ Get out of demo directory.
 $ helm install --name web ./demo
 ```
 
-- List the deployments created by the helm chart.
+- List the deployments created by the Helm chart.
 ```
 $ kubectl get deploy
 ```
@@ -120,7 +120,37 @@ $ helm upgrade web ./demo
 $ helm list
 ```
 
-- Lets get the history of the helm releases.
+- Lets get the history of the Helm releases.
 ```
 $ helm history web
+```
+
+- Lets RollBack to revision to `1`.
+```
+$ helm rollback web 1
+```
+
+- Lets get the history of the Helm releases.
+```
+$ helm history web
+```
+
+- List the Pods.
+```
+$ kubectl get pods
+```
+
+- Delete the Helm release.
+```
+$ helm delete web
+```
+
+- Lets get the history of the Helm releases.
+```
+$ helm history web
+```
+
+- Delete the Helm release completely
+```
+$ helm delete web --purge
 ```
