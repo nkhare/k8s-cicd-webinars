@@ -213,7 +213,8 @@ spec:
 EOF
 ````
 
-- Add `pytest` update line `sh "python -m unittest"` with following commands
+- Add `pytest` to the Jenkinsfile.
+In Jenkinsfile, In section `stage('CI Build and push snapshot')` and `stage('Build Release')` replace  `sh "python -m unittest"` command with following commands.
 ```
             
             sh "pip install -r requirements.txt"  
