@@ -274,4 +274,5 @@ NAME                                     READY     STATUS    RESTARTS   AGE
 jx-production-mongodb-replicaset-0       1/1       Running   0          1m
 jx-production-mongodb-replicaset-1       1/1       Running   0          1m
 jx-production-mongodb-replicaset-2       1/1       Running   0          55s
-jx-production-rsvpapp-54748d68bd-zjgv7   1/1       Running   0          1m ```
+jx-production-rsvpapp-54748d68bd-zjgv7   1/1       Running   0          1m 
+```
