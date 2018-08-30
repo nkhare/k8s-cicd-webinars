@@ -212,7 +212,13 @@ spec:
 
 EOF
 ````
-.
+
+- Add `pytest` update line `sh "python -m unittest"` with following commands
+```
+            
+            sh "pip install -r requirements.txt"  
+            sh "python -m pytest tests/test_rsvpapp.py" 
+```
 
 - Push these changes to the GitHub
 ```
