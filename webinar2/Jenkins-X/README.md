@@ -4,7 +4,7 @@
 
 ### Setting up environment.
 
-- Create a 8GB DigitalOcean droplet.
+- Create a 16 GB DigitalOcean droplet.
 
 - Install `Docker`.
 ```
@@ -78,7 +78,7 @@ Live Restore Enabled: false
 
 - Create cluster using following command.
 ```
-$ jx create cluster minikube --cpu=3 --default-admin-password=admin --vm-driver=none --memory=4096
+$ jx create cluster minikube --cpu=5  --default-admin-password=admin --vm-driver=none --memory=13312
 ```
 It will ask you for install missing dependency, Countinue with installing the dependencies.
 
