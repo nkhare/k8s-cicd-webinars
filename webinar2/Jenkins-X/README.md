@@ -213,13 +213,11 @@ spec:
 EOF
 ````
 
-- Add `pytest` to the Jenkinsfile.
-In Jenkinsfile, In section `stage('CI Build and push snapshot')` and `stage('Build Release')` replace  `sh "python -m unittest"` command with following commands.
-```
-            
-            sh "pip install -r requirements.txt"  
-            sh "python -m pytest tests/test_rsvpapp.py" 
-```
+- In Jenkinsfile, In stages `stage('CI Build and push snapshot')` and `stage('Build Release')` replace  `sh "python -m unittest"` command as shown below.
+
+![](./jenkins.png)
+
+
 
 - Push these changes to the GitHub
 ```
