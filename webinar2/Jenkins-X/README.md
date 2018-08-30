@@ -214,6 +214,10 @@ EOF
 ````
 
 - In Jenkinsfile, In stages `stage('CI Build and push snapshot')` and `stage('Build Release')` replace  `sh "python -m unittest"` command as shown below.
+```
+            sh "pip install -r requirements.txt"  
+            sh "python -m pytest test_rsvpapp.py" 
+```
 
 ![](./jenkins.png)
 
