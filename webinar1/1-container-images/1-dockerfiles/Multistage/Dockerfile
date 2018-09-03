@@ -1,6 +1,6 @@
 # This is the base for our build step container
 # which has all our build essentials
-FROM ubuntu 
+FROM ubuntu AS buildstep
 RUN apt-get update && apt-get install -y build-essential gcc
 COPY hello.c /app/hello.c
 WORKDIR /app
