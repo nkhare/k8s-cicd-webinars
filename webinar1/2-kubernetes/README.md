@@ -68,7 +68,7 @@ $ git clone https://github.com/nkhare/k8s-cicd-webinars.git
 
 - Go to the Terrafrom script directory.
 ```
-$ cd k8s-cicd-webinars/webinar1/2-kubernetes/1-Terrafrom/
+$ cd k8s-cicd-webinars/webinar1/2-kubernetes/1-Terraform/
 ```
 
 - Get a Fingerprint of Your SSH public key.(This SSH key must be linked with DigitalOcean)
