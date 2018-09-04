@@ -30,7 +30,7 @@ Dockerfile consist of the set of instructions required to build the image that w
 
 - Lets build the container image.
 ```
-$ docker image build -t nkhare/nginx .
+$ sudo docker image build -t nkhare/nginx .
 
 Sending build context to Docker daemon  49.25MB
 Step 1/5 : FROM ubuntu:16.04
@@ -54,7 +54,7 @@ Successfully tagged nginx:latest
 
 - List the Docker images.
 ```
-$ docker image ls
+$ sudo docker image ls
 
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 nkhare/nginx        latest              4073540cbcec        3 seconds ago       171MB
@@ -91,12 +91,12 @@ CMD ["bash", "/app/start.sh"]
 
 - Build the image.
 ```
-$ docker image build -t nkhare/simpleapp:capp -f ./SimpleDockerfile .
+$ sudo docker image build -t nkhare/simpleapp:capp -f ./SimpleDockerfile .
 ```
 
 - List the images.
 ```
-$ docker image ls
+$ sudo docker image ls
 
 REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
 nkhare/simpleapp    capp                f815146b7e5a        About a minute ago   329MB
@@ -105,7 +105,7 @@ nkhare/simpleapp    capp                f815146b7e5a        About a minute ago  
 
 - Run the Docker container from the above created image.
 ```
-$ docker container run nkhare/simpleapp:capp
+$ sudo docker container run nkhare/simpleapp:capp
 Hello Everyone
 ```
 
@@ -152,12 +152,12 @@ CMD ["bash", "/usr/src/app/start.sh"]
 
 - Build the image from above Dockerfile.
 ```
-$ docker image build -t nkhare/multistage:capp .
+$ sudo docker image build -t nkhare/multistage:capp .
 ```
 
 - List Docker image.
 ```
-$  docker image ls
+$ sudo docker image ls
 
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 nkhare/multistage   capp                fa3958197408        11 seconds ago      83.5MB
@@ -168,7 +168,7 @@ Here we can see that the size of image created using the multi-stage build is sm
 
 - Lets run the Docker container from the above created image.
 ```
-$ docker container run nkhare/multistage:capp
+$ sudo docker container run nkhare/multistage:capp
 Hello Everyone
 ```
 
