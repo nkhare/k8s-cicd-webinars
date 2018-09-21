@@ -339,4 +339,7 @@ Click on `Create` button.
 - Click on `Pipelines` -> `Configure a new pipeline` 
 - Give a name to pipeline as `staging`
 
-- You will go to the Pipeline UI. Click on `Pipeline Actions` -> `Edit JSON`
+- You will go to the Pipeline UI. Click on `Pipeline Actions` -> `Edit JSON` and paste following 
+```
+
+```
