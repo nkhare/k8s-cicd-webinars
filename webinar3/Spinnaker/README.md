@@ -1,1 +1,234 @@
+## Spinnaker.
 
+### Prerequisites
+- Kubernetes Cluster with node more than 8GB RAM.
+- Helm must be installed. Tiller pod must be running.
+- You must have storage class.
+
+## Labs
+
+- List the Kubernetes nodes.
+```command
+$ kubectl get nodes
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    master   32s   v1.10.0
+```
+- Verify you have default storage class.
+```
+$  kubectl get sc
+NAME                 PROVISIONER                AGE
+standard (default)   k8s.io/minikube-hostpath   41s
+```
+
+- Verify the Tiller pod is running.
+```command
+$ kubectl get po -n kube-system | grep tiller
+
+tiller-deploy-64c9d747bd-dglxj   1/1       Running   0          14s
+```
+
+- Clone the reposistory.
+```
+$ git clone https://github.com/vishalcloudyuga/charts.git
+```
+
+- Go inside the repository.
+```
+$ cd charts/stable/spinnaker
+```
+
+- Update the `values.yaml`
+```
+accounts:
+- name: dockerhub
+  address: https://index.docker.io
+  username: nkhare
+  password: *******
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+    - library/mongo      
+    - nkhare/rsvpapp
+
+```
+In `values.yaml` under `accounts` section update your `dockerhub username and password` in my case it is `nkhare` and also add Dockerhub repository on which you want Perform CICD. for me it is `nkhare/rsvpapp`.
+
+- Upload the kubernetes config in secret
+
+1. Upload your kubeconfig to a secret with the key `config` in the cluster you are installing Spinnaker to.
+
+    ```
+    $ kubectl create ns spinnaker 
+    $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig -n spinnaker
+    ```
+
+2. Set the following `values.yaml` of the chart:
+
+    ```yaml
+    kubeConfig:
+      enabled: true
+      secretName: my-kubeconfig
+      secretKey: config
+      contexts:
+      # Names of contexts available in the uploaded kubeconfig
+      - minikube
+    ```
+- Here my context name is `minikube`.
+
+
+- Update the Helm Dependencies.
+```
+$ helm dependency update
+```
+
+- Install the Spinnaker.
+```
+$ helm install --name=spinnaker --namespace=spinnaker .
+```
+
+- Get the list of pods.
+```
+$ kubectl get pod
+
+NAME                                              READY     STATUS      RESTARTS   AGE
+spinnaker-create-bucket-q8h89                     0/1       Completed   2          1h
+spinnaker-jenkins-66444fcbdc-gmlh7                1/1       Running     0          1h
+spinnaker-minio-695b84f697-h8m5v                  1/1       Running     0          1h
+spinnaker-redis-778bc8d67f-knmpr                  1/1       Running     0          1h
+spinnaker-spinnaker-clouddriver-d94579ccd-cb9z6   1/1       Running     0          1h
+spinnaker-spinnaker-deck-7bdcc48956-rdbsl         1/1       Running     0          1h
+spinnaker-spinnaker-echo-644c55d45f-mdrgm         1/1       Running     0          1h
+spinnaker-spinnaker-front50-55c459975d-9vmjn      1/1       Running     0          1h
+spinnaker-spinnaker-gate-6fcc4ff6d5-c4g8n         1/1       Running     5          1h
+spinnaker-spinnaker-igor-764db658d8-xnpnq         1/1       Running     0          1h
+spinnaker-spinnaker-orca-57f9b94d98-kc68m         1/1       Running     0          1h
+spinnaker-spinnaker-rosco-6fb5f68b44-vz888        1/1       Running     0          1h
+spinnaker-upload-build-image-shhfc                0/1       Completed   0          1h
+spinnaker-upload-run-pipeline-7g4fv               0/1       Completed   0          1h
+spinnaker-upload-run-script-c6b52                 0/1       Completed   0          1h
+
+```
+
+- Copy your Kubernetes `config` to your local computer so you can access the services using the `kubectl port-forward`.
+
+- **Expose Spinnaker**.
+```
+ $ export DECK_POD=$(kubectl get pods --namespace default -l "component=deck,app=spinnaker-spinnaker" -o jsonpath="{.items[0].metadata.name}")
+ 
+ $ kubectl port-forward --namespace default $DECK_POD 9000
+```
+You can access the Spinnaker UI by opening your browser to: http://127.0.0.1:9000.
+
+- **Expose Jenkins**.
+```
+ $  export JENKINS_POD=$(kubectl get pods --namespace default -l "app=spinnaker-jenkins" -o jsonpath="{.items[0].metadata.name}")
+ 
+ $ kubectl port-forward --namespace default $JENKINS_POD 8080
+```
+You can access the Jenkins UI by opening your browser to: http://127.0.0.1:9000.
+
+## Create a Trigger pipeline in Jenkins.
+
+- Fork repository `https://github.com/nkhare/rsvpapp.git` repository to your account.
+This repository have branches like `master` and `dev`.
+
+- Open Jenkins UI.
+In Jenkin UI.
+
+    Click the Credentials link in the sidebar
+
+    Click on the Global credentials domain
+
+    Click [Add Credential]
+    
+- For DockerHub credential give your username and password and `dockerhub` as ID. 
+- For GitHub credential give your username and password and `github` as ID
+
+- Update the plugins (This is mandatory)
+
+Install Some Plugins.
+```
+- Pipeline GitHub Notify Step plugin
+- GitHub API plugin
+- GitHub plugin
+- GitHub Integration plugin
+```
+**Pipeline For `dev` Branch.**
+
+- Create a new pipeline project `dev`.
+
+- Make sure the GitHub project is pointing to your GitHub repository of RSVP application. Like in my case, it is
+ `https://github.com/nkhare/rsvpapp.git`
+
+- In the Build Trigger click on Poll SCM and enter `* * * * *`, which means the Jenkins would pull our GitHub repository, 
+`https://github.com/nkhare/rsvpapp.git` every minute and if there is any, a build would triggered.
+
+- In the `pipeline` section, create the `Groovy script`  like following.
+```
+podTemplate(label: 'mypod', containers: [
+    containerTemplate(name: 'docker', image: 'docker', ttyEnabled: true, command: 'cat'),
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+  ]) {
+    node('mypod') {
+
+        stage('Build the Image') {
+            container('docker') {
+                git branch: 'dev', credentialsId: 'github', url: 'https://github.com/nkhare/rsvpapp.git'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', 
+                        credentialsId: 'dockerhub',
+                        usernameVariable: 'DOCKER_HUB_USER', 
+                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) 
+                    sh "docker build -t ${env.DOCKER_HUB_USER}/rsvpapp:stage ."
+                    sh "docker login -u ${env.DOCKER_HUB_USER} -p ${env.DOCKER_HUB_PASSWORD} "
+                    sh "docker push ${env.DOCKER_HUB_USER}/rsvpapp:stage "
+                }
+            }
+        }
+
+   }
+
+}
+```
+
+**Pipeline For `master` Branch.**
+
+- Create a new pipeline project `master`.
+
+- Make sure the GitHub project is pointing to your GitHub repository of RSVP application. Like in my case, it is
+ `https://github.com/nkhare/rsvpapp.git`
+
+- In the Build Trigger click on Poll SCM and enter `* * * * *`, which means the Jenkins would pull our GitHub repository, 
+`https://github.com/nkhare/rsvpapp.git` every minute and if there is any, a build would triggered.
+
+- In the `pipeline` section, create the `Groovy script`  like following.
+```
+podTemplate(label: 'mypod', containers: [
+    containerTemplate(name: 'docker', image: 'docker', ttyEnabled: true, command: 'cat'),
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+  ]) {
+    node('mypod') {
+
+        stage('Build the Image') {
+            container('docker') {
+                git credentialsId: 'github', url: 'https://github.com/vishalcloudyuga/rsvpapp'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', 
+                        credentialsId: 'dockerhub',
+                        usernameVariable: 'DOCKER_HUB_USER', 
+                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) 
+                    sh "docker build -t ${env.DOCKER_HUB_USER}/rsvpapp:prod ."
+                    sh "docker login -u ${env.DOCKER_HUB_USER} -p ${env.DOCKER_HUB_PASSWORD} "
+                    sh "docker push ${env.DOCKER_HUB_USER}/rsvpapp:prod "
+                }
+            }
+        }
+
+   }
+
+}
+```
