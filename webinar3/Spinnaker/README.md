@@ -251,14 +251,92 @@ $ kubectl create ns production-beta
 - Now Inside the Application you have create `Load Balancers`. 
 
 - Click on `LOAD BALANCER` tab at upper right corner -> `Create Load Balancer`
-  
-**webinar3-staging**
+
+Create a  4 Loadbalancers as following informantion.
+
+**1 webinar3-staging**
+In `Basic Settings`
   - `Account` = `local`
+  - `Namespace` = `staging`
+  - `Stack` = `staging`
+  
+  ![](images/loadbalancer1.png)
+  
+In `Ports` change
+  - `Target Port`= `5000`
+  
+In `Advance Settings` change
+  - `Type` = `NodePort`
+  
+Go back to `Ports` section and change 
+  - `Node Port` = `30500`
+
+  ![](images/loadbalancer1-2.png)
+
+Click on `Create` button.
+
+**2 webinar3-mongodb**
+
+In `Basic Settings`
+  - `Account` = `local`
+  - `Namespace` = `staging`
+  - `Stack` = `mongodb`
+
+In `Ports` change
+  - `Port` = `27017`
+  - `Target Port`= `27017`
 
 
+![](images/loadbalancer2.png)
+
+Keep other things as it is.
+
+Click on `Create` button.
+
+**3 webinar3-prod**
+
+In `Basic Settings`
+  - `Account` = `local`
+  - `Namespace` = `production`
+  - `Stack` = `prod`
+  
+In `Ports` section change  
+  - `Target Port`= `5000`
 
 
+![](images/loadbalancer3.png)
 
 
+Keep other things as it is.
+
+Click on `Create` button.
+
+**4 webinar3-betaprod**
+
+In `Basic Settings`
+  - `Account` = `local`
+  - `Namespace` = `production`
+  - `Stack` = `betaprod`
+  
+In `Ports` section change  
+  - `Target Port`= `5000`
 
 
+![](images/loadbalancer4.png)
+
+
+Keep other things as it is.
+
+Click on `Create` button.
+
+
+- Now You can See 4 Load-Balancer created there.
+
+![](images/lb-all.png)
+
+
+## Create a Spinnaker Pipeline.
+- Click on `Pipelines` -> `Configure a new pipeline` 
+- Give a name to pipeline as `staging`
+
+- You will go to the Pipeline UI. Click on `Pipeline Actions` -> `Edit JSON`
