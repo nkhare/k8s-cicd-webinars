@@ -216,7 +216,7 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Build the Image') {
             container('docker') {
-                git credentialsId: 'github', url: 'https://github.com/vishalcloudyuga/rsvpapp'
+                git credentialsId: 'github', url: 'https://github.com/nkhare/rsvpapp'
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', 
                         credentialsId: 'dockerhub',
                         usernameVariable: 'DOCKER_HUB_USER', 
@@ -232,3 +232,33 @@ podTemplate(label: 'mypod', containers: [
 
 }
 ```
+
+Once Pipeline build, Goto your Forked Github repository . Make change in `dev` and `master` branch and come back to jenkins UI and you can see that your `dev` and `master` pipelines have been triggered.
+
+## Spinnaker CD.
+
+- Create 3 namespaces for our CD operations.
+```
+$ kubectl create ns staging
+$ kubectl create ns production
+$ kubectl create ns production-beta
+```
+
+- Go to the Spinnaker UI.
+
+- Go to `Action` -> `Create Application` And Create application with Name=`webinar3` and enter your `Email ID`.
+
+- Now Inside the Application you have create `Load Balancers`. 
+
+- Click on `LOAD BALANCER` tab at upper right corner -> `Create Load Balancer`
+  
+**webinar3-staging**
+  - `Account` = `local`
+
+
+
+
+
+
+
+
