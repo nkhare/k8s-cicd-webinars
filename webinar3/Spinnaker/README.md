@@ -354,7 +354,7 @@ cloudyuga-betaprod   ClusterIP   10.105.120.153   <none>        80/TCP    4d
 
 - Lets create a backend database for our application in `production` namespace.
 ```
-$ cat <<EOF | kubectl create -f -
+$ cat <<EOF | kubectl apply -n production -f -
 
 apiVersion: apps/v1
 kind: Deployment
@@ -398,6 +398,8 @@ spec:
     protocol: TCP
   selector:
     appdb: rsvpdb
+    
+EOF
 ```
 
 
