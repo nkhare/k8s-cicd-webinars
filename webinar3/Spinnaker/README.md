@@ -502,6 +502,6 @@ spec:
       weight: 100
 ```
 
-- Apply this rule when Spinnaker pipeline ask for "Shift 100% traffic to the application running in the production namespace".
+- Apply this rule when Spinnaker pipeline step ask for Shift 100% traffic to the application running in the production namespace.
 
 
