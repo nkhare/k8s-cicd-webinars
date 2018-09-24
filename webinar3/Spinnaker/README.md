@@ -411,3 +411,97 @@ EOF
 ```
 
 ```
+
+
+
+## Apply Istio Rules.
+
+- Label the namespaces so istio-injection can be enabled in those namespaces and we can apply istio rules to the services running these namespaces.
+```
+$ kubectl label namespace production istio-injection=enabled
+
+$ kubectl label namespace production-beta istio-injection=enabled
+```
+
+
+- Create ingress-Gateway.
+```
+kind: Gateway
+metadata:
+  name: cloudyuga
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+```
+
+- Deploy this configuration.
+```
+$ kubectl apply -f gateway.yaml
+```
+
+- When the Production pipe ask for the first Manual Judgement i.e Shift 80% traffic to the application running in the production-beta namespace. at that time we have to apply this istio rule so it can shift 80% traffic to the application  running in `production-beta` and 20% traffic to the the application  running in `production` namespace. All this application are exposed to the `cloudyuga` gateway we have created in earlier step.
+
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cloudyuga
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - cloudyuga
+  http:
+  - route:
+    - destination:
+        host: cloudyuga-betaprod.production-beta.svc.cluster.local
+        port:
+          number: 80
+      weight: 80
+    - destination:
+        host: cloudyuga-prod.production.svc.cluster.local
+        port:
+          number: 80
+      weight: 20
+```
+
+
+- Deploy this rule when Spinnaker pipeline step ask you to shift 80% traffic to the `production-beta`.
+
+
+- Create a Istio rule so it can shift 100% traffic to the application running in the `production` namepsace. And we also exposing this application with the `cloudyuga` gateway we have created earlier.
+
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cloudyuga
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - cloudyuga
+  http:
+  - route:
+    - destination:
+        host: cloudyuga-betaprod.production-beta.svc.cluster.local
+        port:
+          number: 80
+      weight: 0
+    - destination:
+        host: cloudyuga-prod.production.svc.cluster.local
+        port:
+          number: 80
+      weight: 100
+```
+
+- Apply this rule when Spinnaker pipeline ask for "Shift 100% traffic to the application running in the production namespace".
+
+
