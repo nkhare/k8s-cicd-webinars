@@ -446,7 +446,7 @@ spec:
 $ kubectl apply -f gateway.yaml
 ```
 
-- When the Production pipe ask for the first Manual Judgement i.e Shift 80% traffic to the application running in the production-beta namespace. at that time we have to apply this istio rule so it can shift 80% traffic to the application  running in `production-beta` and 20% traffic to the the application  running in `production` namespace. All this application are exposed to the `cloudyuga` gateway we have created in earlier step.
+- When the Production pipe ask for shifting 80% traffic to the application running in the `production-beta` namespace. When we apply this rule, it shifts 80% traffic to the application running in `production-beta` and 20% traffic to the the application  running in `production` namespace. All this application are exposed to the `cloudyuga` gateway we have created in earlier step.
 
 ```
 apiVersion: networking.istio.io/v1alpha3
