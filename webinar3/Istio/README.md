@@ -17,7 +17,7 @@ Istio support to services by deploying a special sidecar proxy along with the se
 
 
 
-![](https://istio.io/docs/concepts/what-is-istio/img/overview/arch.svg) 
+![](https://istio.io/docs/concepts/what-is-istio/arch.svg) 
 
 
 Istio is divided into `Data plane` and a `Control plane`. 
