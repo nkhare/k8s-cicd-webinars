@@ -335,6 +335,72 @@ Click on `Create` button.
 ![](images/lb-all.png)
 
 
+- Now if you check the namespace you can see that there are services created.
+```
+$ kubectl get svc -n staging
+NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+cloudyuga-mongodb   ClusterIP   10.110.123.237   <none>        27017/TCP      4d
+cloudyuga-staging   NodePort    10.106.15.208    <none>        80:30500/TCP   4d
+
+$ kubectl get svc -n production
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
+cloudyuga-prod   ClusterIP   10.101.24.247    <none>        80/TCP      4d
+
+$ kubectl get svc -n production-beta
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+cloudyuga-betaprod   ClusterIP   10.105.120.153   <none>        80/TCP    4d
+
+```
+
+- Lets create a backend database for our application in `production` namespace.
+```
+$ cat <<EOF | kubectl create -f -
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsvp-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      appdb: rsvpdb
+  template:
+    metadata:
+      labels:
+        appdb: rsvpdb
+    spec:
+      volumes:
+        - name: voldb
+          hostPath:
+            path: /tmp
+      containers:
+      - name: rsvpd-db
+        image: mongo:3.3
+        volumeMounts:
+        - name: voldb
+          mountPath: /data/db
+        env:
+        - name: MONGODB_DATABASE
+          value: rsvpdata
+        ports:
+        - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  labels:
+    app: rsvpdb
+spec:
+  ports:
+  - port: 27017
+    protocol: TCP
+  selector:
+    appdb: rsvpdb
+```
+
+
 ## Create a Spinnaker Pipeline.
 - Click on `Pipelines` -> `Configure a new pipeline` 
 - Give a name to pipeline as `staging`
