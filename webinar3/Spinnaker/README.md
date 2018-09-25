@@ -4,6 +4,7 @@
 - Kubernetes Cluster with node more than 8GB RAM.
 - Helm must be installed. Tiller pod must be running.
 - You must have storage class.
+- Istio Service mesh must be up and running.
 
 ## Labs
 
@@ -180,7 +181,8 @@ podTemplate(label: 'mypod', containers: [
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', 
                         credentialsId: 'dockerhub',
                         usernameVariable: 'DOCKER_HUB_USER', 
-                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) 
+                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+                    
                     sh "docker build -t ${env.DOCKER_HUB_USER}/rsvpapp:stage ."
                     sh "docker login -u ${env.DOCKER_HUB_USER} -p ${env.DOCKER_HUB_PASSWORD} "
                     sh "docker push ${env.DOCKER_HUB_USER}/rsvpapp:stage "
@@ -190,6 +192,7 @@ podTemplate(label: 'mypod', containers: [
 
    }
 
+}
 
 ```
 
@@ -215,11 +218,12 @@ podTemplate(label: 'mypod', containers: [
 
         stage('Build the Image') {
             container('docker') {
-                git credentialsId: 'github', url: 'https://github.com/nkhare/rsvpapp'
+                git credentialsId: 'github', url: 'https://github.com/nkhare/rsvpapp.git'
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', 
                         credentialsId: 'dockerhub',
                         usernameVariable: 'DOCKER_HUB_USER', 
-                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) 
+                        passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+                    
                     sh "docker build -t ${env.DOCKER_HUB_USER}/rsvpapp:prod ."
                     sh "docker login -u ${env.DOCKER_HUB_USER} -p ${env.DOCKER_HUB_PASSWORD} "
                     sh "docker push ${env.DOCKER_HUB_USER}/rsvpapp:prod "
@@ -228,6 +232,8 @@ podTemplate(label: 'mypod', containers: [
         }
 
    }
+
+}
 
 ```
 
@@ -242,6 +248,13 @@ $ kubectl create ns production
 $ kubectl create ns production-beta
 ```
 
+- Label the namespaces so istio-injection can be enabled in those namespaces and we can apply istio rules to the services running these namespaces.
+```
+$ kubectl label namespace production istio-injection=enabled
+
+$ kubectl label namespace production-beta istio-injection=enabled
+```
+
 - Go to the Spinnaker UI.
 
 - Go to `Action` -> `Create Application` And Create application with Name=`webinar3` and enter your `Email ID`.
@@ -254,7 +267,7 @@ Create a  4 Loadbalancers as following informantion.
 
 **1 webinar3-staging**
 In `Basic Settings`
-  - `Account` = `local`
+  - `Account` = `minikube` 
   - `Namespace` = `staging`
   - `Stack` = `staging`
   
@@ -276,7 +289,7 @@ Click on `Create` button.
 **2 webinar3-mongodb**
 
 In `Basic Settings`
-  - `Account` = `local`
+  - `Account` = `minikube`
   - `Namespace` = `staging`
   - `Stack` = `mongodb`
 
@@ -294,7 +307,7 @@ Click on `Create` button.
 **3 webinar3-prod**
 
 In `Basic Settings`
-  - `Account` = `local`
+  - `Account` = `minikube`
   - `Namespace` = `production`
   - `Stack` = `prod`
   
@@ -312,7 +325,7 @@ Click on `Create` button.
 **4 webinar3-betaprod**
 
 In `Basic Settings`
-  - `Account` = `local`
+  - `Account` = `minikube`
   - `Namespace` = `production`
   - `Stack` = `betaprod`
   
