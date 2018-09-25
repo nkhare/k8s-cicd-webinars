@@ -190,7 +190,7 @@ podTemplate(label: 'mypod', containers: [
 
    }
 
-}
+
 ```
 
 **Pipeline For `master` Branch.**
@@ -229,7 +229,6 @@ podTemplate(label: 'mypod', containers: [
 
    }
 
-}
 ```
 
 Once Pipeline build, Goto your Forked Github repository . Make change in `dev` and `master` branch and come back to jenkins UI and you can see that your `dev` and `master` pipelines have been triggered.
