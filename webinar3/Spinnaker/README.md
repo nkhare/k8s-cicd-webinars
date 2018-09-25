@@ -60,8 +60,7 @@ In `values.yaml` under `accounts` section update your `dockerhub username and pa
 1. Upload your kubeconfig to a secret with the key `config` in the cluster you are installing Spinnaker to.
 
     ```
-    $ kubectl create ns spinnaker 
-    $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig -n spinnaker
+    $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig 
     ```
 
 2. Set the following `values.yaml` of the chart:
@@ -85,7 +84,7 @@ $ helm dependency update
 
 - Install the Spinnaker.
 ```
-$ helm install --name=spinnaker --namespace=spinnaker .
+$ helm install --name=spinnaker  .
 ```
 
 - Get the list of pods.
