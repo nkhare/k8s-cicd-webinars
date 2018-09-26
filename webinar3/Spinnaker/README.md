@@ -567,7 +567,7 @@ EOF
     },
     {
       "failPipeline": true,
-      "instructions": "Check application running at  http://142.93.201.107:30500/",
+      "instructions": "Check application running at  30500 port of your IP",
       "judgmentInputs": [],
       "name": "Application looks good?",
       "notifications": [],
