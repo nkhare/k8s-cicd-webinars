@@ -984,3 +984,41 @@ spec:
 - Apply this rule when Spinnaker pipeline step ask for Shift 100% traffic to the application running in the production namespace.
 
 
+## Demo.
+
+- Go to the `dev` branch of forked `rsvpapp` repository.
+
+- Make some change there and commit.
+
+- In `jenkins UI` you will see `dev` pipeline has been triggered.
+
+- After completion of jenkins `dev` pipeline, In `spinnaker UI` you will `staging` pipeline has been triggered.
+
+- It will deploy the application to staging environment and. It will ask you to check the application. Application is running at the 30500 port of your Node IP.
+
+
+- Go back to the GitHub and make pull request from `dev` branch of your repository to the `master` branch of your repository and merge it.
+
+- After merging the changes to master branch, go back to the `jenkins UI` and you will see `master` pipeline has been triggered.
+
+- After completion of jenkins `master` pipeline, In `spinnaker UI` you will `production` pipeline has been triggered.
+
+- First it will deploy the application to `production-beta` env and it will ask you to apply the istio rule so you can shift the 80% traffic to the application in `production-beta` env. You can access the application at `$GATEWAY_URL`
+```
+$ export INGRESS_HOST=<NODE IP Address>
+
+$ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+
+$ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+
+$ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
+$ echo $GATEWAY_URL
+```
+
+- After `countinue` , it will deploy the application to the `production` environment. 
+
+- This will update the pod running in `production` env using the `highlander` policy.
+
+- In next step it will ask you to apply the istio rule so you can  shift 100% traffic to the application running in `production` env. You can access the application at `$GATEWAY_URL`
+
