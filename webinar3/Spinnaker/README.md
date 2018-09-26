@@ -127,7 +127,7 @@ You can access the Spinnaker UI by opening your browser to: http://127.0.0.1:900
  
  $ kubectl port-forward --namespace default $JENKINS_POD 8080
 ```
-You can access the Jenkins UI by opening your browser to: http://127.0.0.1:9000.
+You can access the Jenkins UI by opening your browser to: http://127.0.0.1:8080.
 
 ## Create a Trigger pipeline in Jenkins.
 
@@ -986,6 +986,7 @@ spec:
 
 ## Demo.
 
+**staging**
 - Go to the `dev` branch of forked `rsvpapp` repository.
 
 - Make some change there and commit.
@@ -996,6 +997,7 @@ spec:
 
 - It will deploy the application to staging environment and. It will ask you to check the application. Application is running at the 30500 port of your Node IP.
 
+- When you `countinue`
 
 - Go back to the GitHub and make pull request from `dev` branch of your repository to the `master` branch of your repository and merge it.
 
@@ -1022,3 +1024,6 @@ $ echo $GATEWAY_URL
 
 - In next step it will ask you to apply the istio rule so you can  shift 100% traffic to the application running in `production` env. You can access the application at `$GATEWAY_URL`
 
+- When the we shift 100% traffic it will ask you to delete the application running in `production-beta` namespace.
+
+- Once it delete the application running in `production-beta` namespace, pipeline get finished.
