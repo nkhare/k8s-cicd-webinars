@@ -986,7 +986,7 @@ spec:
 
 ## Demo.
 
-**staging**
+**Staging**
 - Go to the `dev` branch of forked `rsvpapp` repository.
 
 - Make some change there and commit.
@@ -997,7 +997,9 @@ spec:
 
 - It will deploy the application to staging environment and. It will ask you to check the application. Application is running at the 30500 port of your Node IP.
 
-- When you `countinue`
+- When you `countinue` it will delete all the application running in stagging.
+
+**Production**
 
 - Go back to the GitHub and make pull request from `dev` branch of your repository to the `master` branch of your repository and merge it.
 
