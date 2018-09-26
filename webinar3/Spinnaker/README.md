@@ -257,7 +257,7 @@ $ kubectl label namespace production-beta istio-injection=enabled
 
 - Go to the Spinnaker UI.
 
-- Go to `Action` -> `Create Application` And Create application with Name=`webinar3` and enter your `Email ID`.
+- Go to `Action` -> `Create Application` And Create application with Name=`webinar` and enter your `Email ID`.
 
 - Now Inside the Application you have create `Load Balancers`. 
 
@@ -286,7 +286,7 @@ Go back to `Ports` section and change
 
 Click on `Create` button.
 
-**2 webinar3-mongodb**
+**2 webinar-mongodb**
 
 In `Basic Settings`
   - `Account` = `minikube`
@@ -304,7 +304,7 @@ Keep other things as it is.
 
 Click on `Create` button.
 
-**3 webinar3-prod**
+**3 webinar-prod**
 
 In `Basic Settings`
   - `Account` = `minikube`
@@ -322,11 +322,11 @@ Keep other things as it is.
 
 Click on `Create` button.
 
-**4 webinar3-betaprod**
+**4 webinar-betaprod**
 
 In `Basic Settings`
   - `Account` = `minikube`
-  - `Namespace` = `production`
+  - `Namespace` = `production-beta`
   - `Stack` = `betaprod`
   
 In `Ports` section change  
@@ -420,10 +420,476 @@ EOF
 
 - You will go to the Pipeline UI. Click on `Pipeline Actions` -> `Edit JSON` and paste following 
 ```
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "stages": [
+    {
+      "clusters": [
+        {
+          "account": "minikube",
+          "application": "webinar",
+          "cloudProvider": "kubernetes",
+          "containers": [
+            {
+              "args": [],
+              "command": [],
+              "envFrom": [],
+              "envVars": [],
+              "imageDescription": {
+                "account": "dockerhub",
+                "imageId": "index.docker.io/library/mongo:3.3",
+                "registry": "index.docker.io",
+                "repository": "library/mongo",
+                "tag": "3.3"
+              },
+              "imagePullPolicy": "IFNOTPRESENT",
+              "limits": {},
+              "name": "library-mongo",
+              "ports": [
+                {
+                  "containerPort": 27017,
+                  "name": "http",
+                  "protocol": "TCP"
+                }
+              ],
+              "requests": {},
+              "volumeMounts": []
+            }
+          ],
+          "deployment": {
+            "deploymentStrategy": {
+              "rollingUpdate": {
+                "maxSurge": 1,
+                "maxUnavailable": 1
+              },
+              "type": "RollingUpdate"
+            },
+            "enabled": false,
+            "minReadySeconds": 0
+          },
+          "dnsPolicy": "ClusterFirstWithHostNet",
+          "initContainers": [],
+          "interestingHealthProviderNames": [
+            "KubernetesContainer",
+            "KubernetesPod"
+          ],
+          "loadBalancers": [
+            "webinar-mongodb"
+          ],
+          "namespace": "staging",
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "provider": "kubernetes",
+          "region": "staging",
+          "replicaSetAnnotations": {},
+          "stack": "mongodbstaging",
+          "strategy": "",
+          "targetSize": 1,
+          "terminationGracePeriodSeconds": 30,
+          "volumeSources": []
+        },
+        {
+          "account": "minikube",
+          "application": "webinar",
+          "cloudProvider": "kubernetes",
+          "containers": [
+            {
+              "args": [],
+              "command": [],
+              "envFrom": [],
+              "envVars": [
+                {
+                  "name": "MONGODB_HOST",
+                  "value": "webinar-mongodb"
+                }
+              ],
+              "imageDescription": {
+                "account": "dockerhub",
+                "imageId": "index.docker.io/vishalcloudyuga/rsvpapp:stage",
+                "registry": "index.docker.io",
+                "repository": "vishalcloudyuga/rsvpapp",
+                "tag": "stage"
+              },
+              "imagePullPolicy": "ALWAYS",
+              "limits": {},
+              "name": "vishalcloudyuga-rsvpapp",
+              "ports": [
+                {
+                  "containerPort": 5000,
+                  "name": "http",
+                  "protocol": "TCP"
+                }
+              ],
+              "requests": {},
+              "volumeMounts": []
+            }
+          ],
+          "deployment": {
+            "deploymentStrategy": {
+              "rollingUpdate": {
+                "maxSurge": 1,
+                "maxUnavailable": 1
+              },
+              "type": "RollingUpdate"
+            },
+            "enabled": false,
+            "minReadySeconds": 0
+          },
+          "dnsPolicy": "ClusterFirstWithHostNet",
+          "initContainers": [],
+          "interestingHealthProviderNames": [
+            "KubernetesContainer",
+            "KubernetesPod"
+          ],
+          "loadBalancers": [
+            "webinar-staging"
+          ],
+          "namespace": "staging",
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "provider": "kubernetes",
+          "region": "staging",
+          "replicaSetAnnotations": {},
+          "stack": "staging",
+          "strategy": "",
+          "targetSize": 1,
+          "terminationGracePeriodSeconds": 30,
+          "volumeSources": []
+        }
+      ],
+      "name": "Deploy To Staging",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "type": "deploy"
+    },
+    {
+      "failPipeline": true,
+      "instructions": "Check application running at  http://142.93.201.107:30500/",
+      "judgmentInputs": [],
+      "name": "Application looks good?",
+      "notifications": [],
+      "refId": "2",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "cloudProvider": "kubernetes",
+      "cloudProviderType": "kubernetes",
+      "cluster": "webinar-mongodbstaging",
+      "credentials": "minikube",
+      "interestingHealthProviderNames": [
+        "KubernetesService"
+      ],
+      "name": "Destroy staging  mongodb",
+      "namespaces": [
+        "staging"
+      ],
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "5"
+      ],
+      "target": "current_asg_dynamic",
+      "type": "destroyServerGroup"
+    },
+    {
+      "cloudProvider": "kubernetes",
+      "cloudProviderType": "kubernetes",
+      "cluster": "webinar-staging",
+      "credentials": "minikube",
+      "interestingHealthProviderNames": [
+        "KubernetesService"
+      ],
+      "name": "Destroy Staging Application",
+      "namespaces": [
+        "staging"
+      ],
+      "refId": "4",
+      "requisiteStageRefIds": [
+        "5"
+      ],
+      "target": "current_asg_dynamic",
+      "type": "destroyServerGroup"
+    },
+    {
+      "cloudProvider": "kubernetes",
+      "cloudProviderType": "kubernetes",
+      "credentials": "minikube",
+      "failPipeline": true,
+      "interestingHealthProviderNames": [
+        "KubernetesService"
+      ],
+      "judgmentInputs": [],
+      "name": "Destroy Staging Server Group",
+      "namespaces": [],
+      "notifications": [],
+      "refId": "5",
+      "requisiteStageRefIds": [
+        "2"
+      ],
+      "target": "current_asg_dynamic",
+      "type": "manualJudgment"
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "job": "dev",
+      "master": "default",
+      "type": "jenkins"
+    }
+  ],
+  "updateTs": "1537936906000"
+}
+```
+- Click on `Update Pipeline`
+
+- Your Pipeline will look like:
+![](images/staging.png)
+
+**Production Pipeline**
+- Click on `Pipelines` -> `Configure a new pipeline` 
+- Give a name to pipeline as `production`
+
+- You will go to the Pipeline UI. Click on `Pipeline Actions` -> `Edit JSON` and paste following 
 
 ```
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "stages": [
+    {
+      "clusters": [
+        {
+          "account": "minikube",
+          "application": "webinar",
+          "cloudProvider": "kubernetes",
+          "containers": [
+            {
+              "args": [],
+              "command": [],
+              "envFrom": [],
+              "envVars": [
+                {
+                  "name": "MONGODB_HOST",
+                  "value": "mongodb.production.svc.cluster.local"
+                }
+              ],
+              "imageDescription": {
+                "account": "dockerhub",
+                "imageId": "index.docker.io/vishalcloudyuga/rsvpapp:prod",
+                "registry": "index.docker.io",
+                "repository": "vishalcloudyuga/rsvpapp",
+                "tag": "prod"
+              },
+              "imagePullPolicy": "ALWAYS",
+              "limits": {},
+              "name": "vishalcloudyuga-rsvpapp",
+              "ports": [
+                {
+                  "containerPort": 5000,
+                  "name": "http",
+                  "protocol": "TCP"
+                }
+              ],
+              "requests": {},
+              "volumeMounts": []
+            }
+          ],
+          "deployment": {
+            "deploymentStrategy": {
+              "rollingUpdate": {
+                "maxSurge": 1,
+                "maxUnavailable": 1
+              },
+              "type": "RollingUpdate"
+            },
+            "enabled": false,
+            "minReadySeconds": 0
+          },
+          "dnsPolicy": "ClusterFirstWithHostNet",
+          "initContainers": [],
+          "interestingHealthProviderNames": [
+            "KubernetesContainer",
+            "KubernetesPod"
+          ],
+          "loadBalancers": [
+            "webinar-betaprod"
+          ],
+          "namespace": "production-beta",
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "provider": "kubernetes",
+          "region": "production-beta",
+          "replicaSetAnnotations": {},
+          "stack": "betaprod",
+          "strategy": "",
+          "targetSize": 1,
+          "terminationGracePeriodSeconds": 30,
+          "volumeSources": []
+        }
+      ],
+      "name": "Production-Beta",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "type": "deploy"
+    },
+    {
+      "failPipeline": true,
+      "instructions": "Shift 80% traffic to beta-production.\n\nkubectl apply -f 80beta20prod.yaml",
+      "judgmentInputs": [],
+      "name": "Shift 80% traffic to Production-Beta",
+      "notifications": [],
+      "refId": "2",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "cloudProvider": "kubernetes",
+      "cloudProviderType": "kubernetes",
+      "cluster": "webinar-betaprod",
+      "credentials": "minikube",
+      "interestingHealthProviderNames": [
+        "KubernetesService"
+      ],
+      "name": "Destroy Staging Front End",
+      "namespaces": [
+        "production-beta"
+      ],
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "7"
+      ],
+      "target": "current_asg_dynamic",
+      "type": "destroyServerGroup"
+    },
+    {
+      "clusters": [
+        {
+          "account": "minikube",
+          "application": "webinar",
+          "cloudProvider": "kubernetes",
+          "containers": [
+            {
+              "args": [],
+              "command": [],
+              "envFrom": [],
+              "envVars": [
+                {
+                  "name": "MONGODB_HOST",
+                  "value": "mongodb"
+                }
+              ],
+              "imageDescription": {
+                "account": "dockerhub",
+                "imageId": "index.docker.io/vishalcloudyuga/rsvpapp:prod",
+                "registry": "index.docker.io",
+                "repository": "vishalcloudyuga/rsvpapp",
+                "tag": "prod"
+              },
+              "imagePullPolicy": "ALWAYS",
+              "limits": {},
+              "name": "vishalcloudyuga-rsvpapp",
+              "ports": [
+                {
+                  "containerPort": 5000,
+                  "name": "http",
+                  "protocol": "TCP"
+                }
+              ],
+              "requests": {},
+              "volumeMounts": []
+            }
+          ],
+          "deployment": {
+            "deploymentStrategy": {
+              "rollingUpdate": {
+                "maxSurge": 1,
+                "maxUnavailable": 1
+              },
+              "type": "RollingUpdate"
+            },
+            "enabled": false,
+            "minReadySeconds": 0
+          },
+          "dnsPolicy": "ClusterFirstWithHostNet",
+          "initContainers": [],
+          "interestingHealthProviderNames": [
+            "KubernetesContainer",
+            "KubernetesPod"
+          ],
+          "loadBalancers": [
+            "webinar-prod"
+          ],
+          "namespace": "production",
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "provider": "kubernetes",
+          "region": "production",
+          "replicaSetAnnotations": {},
+          "stack": "production",
+          "strategy": "highlander",
+          "targetSize": 1,
+          "terminationGracePeriodSeconds": 30,
+          "volumeSources": []
+        }
+      ],
+      "name": "Production",
+      "refId": "5",
+      "requisiteStageRefIds": [
+        "2"
+      ],
+      "type": "deploy"
+    },
+    {
+      "failPipeline": true,
+      "instructions": "Shift 100% traffic to Production\n\nkubectl apply -f  prod100.yaml",
+      "judgmentInputs": [],
+      "name": "Shift 100% traffic to Production",
+      "notifications": [],
+      "refId": "6",
+      "requisiteStageRefIds": [
+        "5"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "failPipeline": true,
+      "instructions": "Destroy Production-Beta server groups??",
+      "judgmentInputs": [],
+      "name": "Destroy Production-Beta",
+      "notifications": [],
+      "refId": "7",
+      "requisiteStageRefIds": [
+        "6"
+      ],
+      "type": "manualJudgment"
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "job": "master",
+      "master": "default",
+      "type": "jenkins"
+    }
+  ],
+  "updateTs": "1537936927000"
+}
+```
 
+- Click on `Update Pipeline`
 
+- Your piprline will look like:
+![](images/production.png)
 
 ## Apply Istio Rules.
 
@@ -437,9 +903,10 @@ $ kubectl label namespace production-beta istio-injection=enabled
 
 - Create ingress-Gateway.
 ```
+apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: cloudyuga
+  name: webinar
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -457,30 +924,31 @@ spec:
 $ kubectl apply -f gateway.yaml
 ```
 
-- When the Production pipe ask for shifting 80% traffic to the application running in the `production-beta` namespace. When we apply this rule, it shifts 80% traffic to the application running in `production-beta` and 20% traffic to the the application  running in `production` namespace. All this application are exposed to the `cloudyuga` gateway we have created in earlier step.
+- When the Production pipe ask for shifting 80% traffic to the application running in the `production-beta` namespace. When we apply this rule, it shifts 80% traffic to the application running in `production-beta` and 20% traffic to the the application  running in `production` namespace. All this application are exposed to the `webinar` gateway we have created in earlier step.
 
 ```
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: cloudyuga
+  name: webinar
 spec:
   hosts:
   - "*"
   gateways:
-  - cloudyuga
+  - webinar
   http:
   - route:
     - destination:
-        host: cloudyuga-betaprod.production-beta.svc.cluster.local
+        host: webinar-betaprod.production-beta.svc.cluster.local
         port:
           number: 80
       weight: 80
     - destination:
-        host: cloudyuga-prod.production.svc.cluster.local
+        host: webinar-prod.production.svc.cluster.local
         port:
           number: 80
       weight: 20
+
 ```
 
 
@@ -493,21 +961,21 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: cloudyuga
+  name: webinar
 spec:
   hosts:
   - "*"
   gateways:
-  - cloudyuga
+  - webinar
   http:
   - route:
     - destination:
-        host: cloudyuga-betaprod.production-beta.svc.cluster.local
+        host: webinar-betaprod.production-beta.svc.cluster.local
         port:
           number: 80
       weight: 0
     - destination:
-        host: cloudyuga-prod.production.svc.cluster.local
+        host: webinar-prod.production.svc.cluster.local
         port:
           number: 80
       weight: 100
