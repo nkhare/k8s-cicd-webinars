@@ -106,12 +106,11 @@ workflows:
   - Create a Context with name `DOCKERHUB`.
   - In the context `DOCKERHUB`, Add two Environment Variables as below.
   - Click on `Add Environment Variable` button, Give name as `DOCKERHUB_USERNAME` and in value enter your Dockerhub username.
-
-![](./d-user.png)
-
+  
+  ![](./d-user.png)
   - Click on `Add Environment Variable` button, Give name as `DOCKERHUB_PASSWORD` and in value enter your Dockerhub password.
   
-![](./dc-pass.png)
+  ![](./dc-pass.png)
    
 - Add the project i.e. recently forked `rsvpapp`.
 - As we have already added the configuration file, go ahead and click on the `Start building`.
