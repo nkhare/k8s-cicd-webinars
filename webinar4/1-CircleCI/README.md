@@ -6,7 +6,7 @@
 - Fork the [RSVPAPP](https://github.com/cloudyuga/rsvpapp.git) repository to your GitHub account.
 - Go to the your forked RSVPAPP repository. and add the CircleCI configuration file.
 
-- Add `.circleci/config.yml` file to your repository as shown below.
+- Add `.circleci/config.yml` file to your forked RSVPAPP repository as shown below.
 
 ```yml
 
@@ -70,7 +70,7 @@ jobs:
       - run:
           name: Push image
           command: |
-            docker build -t vishalcloudyuga/rsvpapp:$CIRCLE_SHA1 .
+            docker build -t $DOCKERHUB_USERNAME/rsvpapp:$CIRCLE_SHA1 .
             echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
             docker push $DOCKERHUB_USERNAME/rsvpapp:$CIRCLE_SHA1	
 
@@ -98,5 +98,8 @@ workflows:
             branches:
               only: dev
 
+
 ```
 
+
+- Now go to the [CircleCI](https://circleci.com/)
