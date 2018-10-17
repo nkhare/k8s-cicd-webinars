@@ -118,4 +118,11 @@ workflows:
 - Just go the recently forked RSVPAPP repository at github. and make some changes in `dev` branch only.[As we have added branch filter to dev branch only, CI will build only when there is change in dev branch]
 
 - As soon as you make some changes in Github, new CI Workflow will trigger.
-  - CircleCi workflow has 3 stages i.e. `test, build, and push`.
+- CircleCi workflow has 3 Jobs i.e. `test, build, and push`.
+  - **test** job carry out the `pytest` on code.
+  - **build** job builds the image.
+  - **push** job push the image to the Dockerhub.
+  - Build images are tagged with the git commit SHA1.
+  
+
+
