@@ -3,9 +3,10 @@
 
 ## CircleCI
 - Sign Up at [CircleCI](https://circleci.com/) using GitHub credentials.
-- Fork the [RSVPAPP](https://github.com/cloudyuga/rsvpapp.git) repository to your GitHub account.
+- Fork the [RSVPAPP](https://github.com/nkhare/rsvpapp.git) repository to your GitHub account.
 - Go to the your forked RSVPAPP repository. and add the CircleCI configuration file.
-
+- There are two branches `master` and `dev`.
+- Switch to the `dev` branch.
 - Add `.circleci/config.yml` file to your forked RSVPAPP repository as shown below.
 
 ```yml
@@ -97,9 +98,12 @@ workflows:
           filters:
             branches:
               only: dev
-
-
 ```
 
 
-- Now go to the [CircleCI](https://circleci.com/)
+- Now go to the [CircleCI](https://circleci.com/). and Add project.
+- Add the project i.e. recently forked `rsvpapp`.
+- As we have already added the configuration file, go ahead and click on the `Start building`.
+- Now you will navigate to your Application. You can see there is no build.
+- Just go the recently forked RSVPAPP repository at github. and make some changes in `dev` branch only.[As we have added branch filter to dev branch only, CI will build only when there is change in dev branch]
+
