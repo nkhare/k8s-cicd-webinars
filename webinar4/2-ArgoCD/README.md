@@ -109,24 +109,24 @@ Cluster 'kubernetes-admin@kubernetes' added
 Open a browser to the ArgoCD external UI, and login using the credentials set in earlier step.
 
 - Connect a git repository containing your apps. 
-  ![](./argo-1.png)
+  ![](./argocd-1.png)
   
 - After connecting a git repository, Click on `New application` -> `Select Repository` -> `CREATE APP FROM DIRECTORY`. and fill the information like below.
 
-  ![](./argo-2.png)
+  ![](./argocd-2.png)
 
 - Click on Create. And you will see application is created.
   
-  ![](./argo-3.png)
+  ![](./argocd-3.png)
   In status you can see that application is created but it is `OutOfSync`.
   
 - To deploy the application click `Action` and choose `Sync`.
 
-  ![](./argo-4.png)
+  ![](./argocd-4.png)
 
 - Once your application is deployed you can see the detailed view of your application like below.
   
-  ![](./argo-5.png)
+  ![](./argocd-5.png)
 
 
 - In CLI we can list down the pods running.
