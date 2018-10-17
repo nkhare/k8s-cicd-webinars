@@ -102,9 +102,17 @@ workflows:
 
 
 - Now go to the [CircleCI](https://circleci.com/). and Add project.
+- Go to the `SETTINGS` -> `Contexts` -> `Create Context`
+  - Create a Context with name `DOCKERHUB`.
+  - In the context `DOCKERHUB`, Add two Environment Variables as below.
+  - Click on `Add Environment Variable` button, Give name as `DOCKERHUB_USERNAME` and in value enter your Dockerhub username.
+   ![](./d-user.png)
+  - Click on `Add Environment Variable` button, Give name as `DOCKERHUB_PASSWORD` and in value enter your Dockerhub password.
+   ![](./d-pass.png)
 - Add the project i.e. recently forked `rsvpapp`.
 - As we have already added the configuration file, go ahead and click on the `Start building`.
 - Now you will navigate to your Application. You can see there is no build.
 - Just go the recently forked RSVPAPP repository at github. and make some changes in `dev` branch only.[As we have added branch filter to dev branch only, CI will build only when there is change in dev branch]
 
-- As soon as you make some changes in Github, new CI build will start.
+- As soon as you make some changes in Github, new CI Workflow will trigger.
+  - CircleCi workflow has 3 stages i.e. `test, build, and push`.
