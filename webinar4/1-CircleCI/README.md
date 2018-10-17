@@ -122,7 +122,7 @@ workflows:
   - **test** job carry out the `pytest` on code.
   - **build** job builds the image.
   - **push** job push the image to the Dockerhub.
-  - Build images are tagged with the git commit SHA1.
+  - Built images are tagged with the git commit SHA1.
   
 
 
