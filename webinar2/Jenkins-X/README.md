@@ -4,15 +4,17 @@
 
 ### Setting up environment.
 
-- Create a 16 GB DigitalOcean droplet.
+- Create a 16GB Ubuntu 16.04 DigitalOcean droplet.
 
 - Install `Docker`.
 ```
-$ curl -fsSL get.docker.com | sh
+$ apt update
+$ apt install docker.io
 ```
 - Install `Minikube`.
+
 ```
-$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.28.2/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.32.0/minikube-linux-amd64 && chmod +x minikube && sudo cp minikube /usr/local/bin/ && rm minikube
 ```
 - Install `kubectl`.
 ```
@@ -26,7 +28,7 @@ $ sudo apt-get install -y kubectl
 
 - Install `JX`.
 ```
-$ curl -L https://github.com/jenkins-x/jx/releases/download/v1.3.175/jx-linux-amd64.tar.gz | tar xzv 
+$ curl -L https://github.com/jenkins-x/jx/releases/download/v1.3.689/jx-linux-amd64.tar.gz | tar xzv 
 sudo mv jx /usr/local/bin
 ```
 - Install `socat`
@@ -82,7 +84,7 @@ $ jx create cluster minikube --cpu=5 --default-admin-password=admin --vm-driver=
 ```
 It will ask you for install missing dependency, Countinue with installing the dependencies.
 
-- Provide your Github username and API token.
+- Provide your Github username and API token. It will also ask you for the Jenkins API token. Login to y
 
 - Once Cluster created we can go to next step.
 
@@ -98,6 +100,18 @@ jenkins-x-monocular-ui    http://monocular.jx.206.189.227.210.nip.io
 nexus                     http://nexus.jx.206.189.227.210.nip.io
 ```
 
+- Set some requires RBAC policies to Service Accounts in `jx`, `jx-staging` and `jx-production` namespaces. There is bug with [JX](https://github.com/jenkins-x/jx/issues/2591). To fix this bug we have to create these RBAC rules.
+
+```
+$ kubectl create clusterrolebinding jx-staging1 --clusterrole=cluster-admin --user=admin --user=expose --group=system:serviceaccounts --serviceaccount=jx-staging:expose --namespace=jx-staging
+
+$ kubectl create clusterrolebinding jx-production1 --clusterrole=cluster-admin --user=admin --user=expose --group=system:serviceaccounts --serviceaccount=jx-production:expose --namespace=jx-productions
+
+$ kubectl create clusterrolebinding jx-binding1 --clusterrole=cluster-admin --user=admin --user=expose --group=system:serviceaccounts --serviceaccount=jx:expose --namespace=jx
+
+```
+
+
 ### Create a Application.
 
 - Clone the application repository.
@@ -107,7 +121,6 @@ $  git clone https://github.com/cloudyuga/rsvpapp.git
 $ cd rsvpapp
 
 $ rm -r .git/
-
 ```
 
 - Create the application in `jx` and on `github` using following command.
