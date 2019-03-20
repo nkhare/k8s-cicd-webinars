@@ -286,7 +286,7 @@ $ kubectl label namespace production-beta istio-injection=enabled
 
 Create a  4 Loadbalancers as following informantion.
 
-**1 webinar3-staging**
+**1 webinar-staging**
 In `Basic Settings`
   - `Account` = `minikube` 
   - `Namespace` = `staging`
