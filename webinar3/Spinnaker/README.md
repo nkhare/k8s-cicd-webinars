@@ -9,37 +9,49 @@
 ## Labs
 
 - List the Kubernetes nodes.
+
 ```command
-$ kubectl get nodes
+kubectl get nodes
+```
+```
 NAME       STATUS   ROLES    AGE   VERSION
 minikube   Ready    master   32s   v1.10.0
 ```
+
 - Verify you have default storage class.
+
 ```
-$  kubectl get sc
+kubectl get sc
+```
+```
 NAME                 PROVISIONER                AGE
 standard (default)   k8s.io/minikube-hostpath   41s
 ```
 
 - Verify the Tiller pod is running.
-```command
-$ kubectl get po -n kube-system | grep tiller
 
+```command
+kubectl get po -n kube-system | grep tiller
+```
+```
 tiller-deploy-64c9d747bd-dglxj   1/1       Running   0          14s
 ```
 
 - Clone the reposistory.
-```
-$ git clone https://github.com/vishalcloudyuga/charts.git
+
+```command
+git clone https://github.com/vishalcloudyuga/charts.git
 ```
 
 - Go inside the repository.
-```
-$ cd charts/stable/spinnaker
+
+```command
+cd charts/stable/spinnaker
 ```
 
 - Update the `values.yaml`
-```
+
+```yaml
 accounts:
 - name: dockerhub
   address: https://index.docker.io
@@ -60,9 +72,9 @@ In `values.yaml` under `accounts` section update your `dockerhub username and pa
 
 1. Upload your kubeconfig to a secret with the key `config` in the cluster you are installing Spinnaker to.
 
-    ```
-    $ kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig 
-    ```
+```command
+kubectl create secret generic --from-file=$HOME/.kube/config my-kubeconfig 
+```
 
 2. Set the following `values.yaml` of the chart:
 
@@ -79,18 +91,23 @@ In `values.yaml` under `accounts` section update your `dockerhub username and pa
 
 
 - Update the Helm Dependencies.
-```
-$ helm dependency update
+
+```command
+helm dependency update
 ```
 
 - Install the Spinnaker.
-```
-$ helm install --name=spinnaker  .
+
+```command
+helm install --name=spinnaker  .
 ```
 
 - Get the list of pods.
+
+```command
+kubectl get pod
 ```
-$ kubectl get pod
+```
 
 NAME                                              READY     STATUS      RESTARTS   AGE
 spinnaker-create-bucket-q8h89                     0/1       Completed   2          1h
@@ -114,18 +131,22 @@ spinnaker-upload-run-script-c6b52                 0/1       Completed   0       
 - Copy your Kubernetes `config` to your local computer so you can access the services using the `kubectl port-forward`.
 
 - **Expose Spinnaker**.
+
+```command
+ export DECK_POD=$(kubectl get pods --namespace default -l "component=deck,app=spinnaker-spinnaker" -o jsonpath="{.items[0].metadata.name}")
 ```
- $ export DECK_POD=$(kubectl get pods --namespace default -l "component=deck,app=spinnaker-spinnaker" -o jsonpath="{.items[0].metadata.name}")
- 
- $ kubectl port-forward --namespace default $DECK_POD 9000
+```command
+kubectl port-forward --namespace default $DECK_POD 9000
 ```
 You can access the Spinnaker UI by opening your browser to: http://127.0.0.1:9000.
 
 - **Expose Jenkins**.
-```
- $  export JENKINS_POD=$(kubectl get pods --namespace default -l "app=spinnaker-jenkins" -o jsonpath="{.items[0].metadata.name}")
+```command
+ export JENKINS_POD=$(kubectl get pods --namespace default -l "app=spinnaker-jenkins" -o jsonpath="{.items[0].metadata.name}")
  
- $ kubectl port-forward --namespace default $JENKINS_POD 8080
+```
+```command
+ kubectl port-forward --namespace default $JENKINS_POD 8080
 ```
 You can access the Jenkins UI by opening your browser to: http://127.0.0.1:8080.
 
@@ -347,25 +368,38 @@ Click on `Create` button.
 
 
 - Now if you check the namespace you can see that there are services created.
+
+```command
+kubectl get svc -n staging
 ```
-$ kubectl get svc -n staging
+```
 NAME                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 cloudyuga-mongodb   ClusterIP   10.110.123.237   <none>        27017/TCP      4d
 cloudyuga-staging   NodePort    10.106.15.208    <none>        80:30500/TCP   4d
+```
+- Now if you check the namespace you can see that there are services created.
 
-$ kubectl get svc -n production
+```command
+kubectl get svc -n production
+```
+```
 NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
 cloudyuga-prod   ClusterIP   10.101.24.247    <none>        80/TCP      4d
+```
+- Now if you check the namespace you can see that there are services created.
 
-$ kubectl get svc -n production-beta
+```command
+kubectl get svc -n production-beta
+```
+```
 NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
 cloudyuga-betaprod   ClusterIP   10.105.120.153   <none>        80/TCP    4d
 
 ```
 
 - Lets create a backend database for our application in `production` namespace.
-```
-$ cat <<EOF | kubectl apply -n production -f -
+```command
+cat <<EOF | kubectl apply -n production -f -
 
 apiVersion: apps/v1
 kind: Deployment
@@ -894,15 +928,16 @@ EOF
 ## Apply Istio Rules.
 
 - Label the namespaces so istio-injection can be enabled in those namespaces and we can apply istio rules to the services running these namespaces.
-```
-$ kubectl label namespace production istio-injection=enabled
 
-$ kubectl label namespace production-beta istio-injection=enabled
+```command
+kubectl label namespace production istio-injection=enabled
+kubectl label namespace production-beta istio-injection=enabled
 ```
 
 
 - Create ingress-Gateway.
-```
+
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -920,13 +955,14 @@ spec:
 ```
 
 - Deploy this configuration.
-```
-$ kubectl apply -f gateway.yaml
+
+```command
+kubectl apply -f gateway.yaml
 ```
 
 - When the Production pipe ask for shifting 80% traffic to the application running in the `production-beta` namespace. When we apply this rule, it shifts 80% traffic to the application running in `production-beta` and 20% traffic to the the application  running in `production` namespace. All this application are exposed to the `webinar` gateway we have created in earlier step.
 
-```
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -957,7 +993,7 @@ spec:
 
 - Create a Istio rule so it can shift 100% traffic to the application running in the `production` namepsace. And we also exposing this application with the `cloudyuga` gateway we have created earlier.
 
-```
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -1008,7 +1044,8 @@ spec:
 - After completion of jenkins `master` pipeline, In `spinnaker UI` you will `production` pipeline has been triggered.
 
 - First it will deploy the application to `production-beta` env and it will ask you to apply the istio rule so you can shift the 80% traffic to the application in `production-beta` env. You can access the application at `$GATEWAY_URL`
-```
+
+```command
 $ export INGRESS_HOST=<NODE IP Address>
 
 $ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
