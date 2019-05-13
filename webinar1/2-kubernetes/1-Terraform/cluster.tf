@@ -1,3 +1,7 @@
+resource "digitalocean_ssh_key" "default" {
+  name       = "Terraform Example"
+  public_key = "${file(var.pub_key)}"
+}
 resource "digitalocean_droplet" "master" {
     name = "k8s-matser-node"
     image = "ubuntu-16-04-x64"
@@ -5,9 +9,7 @@ resource "digitalocean_droplet" "master" {
     region = "${var.region}"
     ipv6 = true
     private_networking = false
-    ssh_keys = [
-      "${var.ssh_fingerprint}"
-    ]
+    ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
     connection {
       user = "root"
       type = "ssh"
@@ -27,7 +29,7 @@ resource "digitalocean_droplet" "master" {
     inline = [
       "export PATH=$PATH:/usr/bin",
       # initialize the Master node.
-      "kubeadm init  --kubernetes-version v1.10.0 --pod-network-cidr=192.168.0.0/16 --token=ff6edf.38d10317aa6fa57e --ignore-preflight-errors=all"
+      "kubeadm init  --kubernetes-version v1.13.0 --pod-network-cidr=192.168.0.0/16 --token=ff6edf.38d10317aa6fa57e --ignore-preflight-errors=all"
     ]
   }
 
@@ -56,9 +58,7 @@ resource "digitalocean_droplet" "worker1" {
     region = "${var.region}"
     ipv6 = true
     private_networking = false
-    ssh_keys = [
-      "${var.ssh_fingerprint}"
-    ]
+    ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
     connection {
       user = "root"
       type = "ssh"
@@ -90,9 +90,7 @@ resource "digitalocean_droplet" "worker2" {
     region = "${var.region}"
     ipv6 = true
     private_networking = false
-    ssh_keys = [
-      "${var.ssh_fingerprint}"
-    ]
+    ssh_keys = ["${digitalocean_ssh_key.default.fingerprint}"]
     connection {
       user = "root"
       type = "ssh"
